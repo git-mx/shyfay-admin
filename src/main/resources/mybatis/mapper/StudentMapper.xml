@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyfay.admin.dao.StudentMapper">
+
+    <resultMap id="BaseResultMap" type="com.shyfay.admin.bean.Student" >
+        <result column="studentId" property="studentId" />
+        <result column="groupNo" property="groupNo" />
+        <result column="studentName" property="studentName" />
+        <result column="parentName" property="parentName" />
+        <result column="contactPhone" property="contactPhone" />
+    </resultMap>
+    <sql id="studentColumns">
+        student_id AS "studentId",
+        group_no AS "groupNo",
+        student_name AS "studentName",
+        parent_name AS "parentName",
+        contact_phone AS "contactPhone"
+    </sql>
+
+    <insert id="add" parameterType="com.shyfay.admin.bean.Student" >
+        INSERT INTO student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId!=null">
+                student_id,
+            </if>
+            <if test="groupNo!=null">
+                group_no,
+            </if>
+            <if test="studentName!=null">
+                student_name,
+            </if>
+            <if test="parentName!=null">
+                parent_name,
+            </if>
+            <if test="contactPhone!=null">
+                contact_phone
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="studentId!=null">
+                #{studentId},
+            </if>
+            <if test="groupNo!=null">
+                #{groupNo},
+            </if>
+            <if test="studentName!=null">
+                #{studentName},
+            </if>
+            <if test="parentName!=null">
+                #{parentName},
+            </if>
+            <if test="contactPhone!=null">
+                #{contactPhone}
+            </if>
+        </trim>
+    </insert>
+
+    <!--删除方法-->
+    <delete id="delete">
+        delete from student WHERE student_id = #{studentId}
+    </delete>
+
+    <!--查询单个对象-->
+    <select id="get" parameterType="java.lang.Integer" resultType="com.shyfay.admin.bean.Student">
+        SELECT
+        <include refid="studentColumns"/>
+        FROM student  WHERE student_id = #{studentId}
+    </select>
+
+    <select id="getRand" resultType="com.shyfay.admin.bean.Student">
+        SELECT
+        <include refid="studentColumns"/>
+        FROM student  WHERE group_no = 0 ORDER BY RAND() limit 2;
+    </select>
+
+
+    <!--更新单个对象-->
+    <update id="update" parameterType="com.shyfay.admin.bean.Student" >
+        UPDATE student
+        <set>
+            <if test="studentId!=null">
+                student_id = #{studentId},
+            </if>
+            <if test="groupNo!=null">
+                group_no = #{groupNo},
+            </if>
+            <if test="studentName!=null">
+                student_name = #{studentName},
+            </if>
+            <if test="parentName!=null">
+                parent_name = #{parentName},
+            </if>
+            <if test="contactPhone!=null">
+                contact_phone = #{contactPhone}
+            </if>
+
+        </set>
+        <where>
+            student_id = #{studentId}
+        </where>
+    </update>
+
+
+    <!--查询对象列表-->
+    <select id="list" resultType="com.shyfay.admin.bean.Student" >
+        SELECT
+        <include refid="studentColumns" />
+       FROM student ORDER BY group_no
+    </select>
+
+    <select id="listTwins" resultType="com.shyfay.admin.bean.Student">
+        SELECT
+        <include refid="studentColumns" />
+        FROM student WHERE student_name = #{nameOne} OR student_name = #{nameTwo}
+    </select>
+
+    <select id="getExchange" resultType="com.shyfay.admin.bean.Student" >
+        SELECT
+        <include refid="studentColumns" />
+        FROM student WHERE group_no = #{groupNo} AND student_id != #{studentId} limit 1
+    </select>
+
+</mapper>

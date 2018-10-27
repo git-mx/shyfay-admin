@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyfay.admin.dao.SysDepartmentMapper">
+    <sql id="baseColumns">
+        department_id AS "departmentId",
+        department_name AS "departmentName",
+        establish_time AS "establishTime",
+        department_remark AS "departmentRemark"
+    </sql>
+
+    <sql id="optionColumn">
+        department_id AS "id",
+        department_name AS "name"
+    </sql>
+
+    <insert id="insert" parameterType="com.shyfay.admin.bean.SysDepartment" >
+        INSERT INTO sys_department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="departmentId!=null">
+                department_id,
+            </if>
+            <if test="departmentName!=null">
+                department_name,
+            </if>
+            <if test="establishTime!=null">
+                establish_time,
+            </if>
+            <if test="departmentRemark!=null">
+                department_remark,
+            </if>
+            <if test="createTime!=null">
+                create_time,
+            </if>
+            <if test="updateTime!=null">
+                update_time,
+            </if>
+            <if test="deleteStatus!=null">
+                delete_status,
+            </if>
+            <if test="createId!=null">
+                create_id,
+            </if>
+            <if test="upadteId!=null">
+                upadte_id
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="departmentId!=null">
+                #{departmentId},
+            </if>
+            <if test="departmentName!=null">
+                #{departmentName},
+            </if>
+            <if test="establishTime!=null">
+                #{establishTime},
+            </if>
+            <if test="departmentRemark!=null">
+                #{departmentRemark},
+            </if>
+            <if test="createTime!=null">
+                #{createTime},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime},
+            </if>
+            <if test="deleteStatus!=null">
+                #{deleteStatus},
+            </if>
+            <if test="createId!=null">
+                #{createId},
+            </if>
+            <if test="upadteId!=null">
+                #{upadteId}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.shyfay.admin.bean.SysDepartment" >
+        UPDATE sys_department
+        <set>
+            <if test="departmentId!=null">
+                department_id=#{departmentId},
+            </if>
+            <if test="departmentName!=null">
+                department_name=#{departmentName},
+            </if>
+            <if test="establishTime!=null">
+                establish_time=#{establishTime},
+            </if>
+            <if test="departmentRemark!=null">
+                department_remark=#{departmentRemark},
+            </if>
+            <if test="createTime!=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+            <if test="deleteStatus!=null">
+                delete_status=#{deleteStatus},
+            </if>
+            <if test="createId!=null">
+                create_id=#{createId},
+            </if>
+            <if test="upadteId!=null">
+                upadte_id=#{upadteId}
+            </if>
+        </set>
+        <where>
+            department_id = #{departmentId}
+        </where>
+    </update>
+
+
+
+    <update id="updateDeleteStatus">
+        UPDATE sys_department SET delete_status  = 1 WHERE department_id = #{departmentId}
+    </update>
+
+    <select id="get" resultType="com.shyfay.admin.web.iobean.DepartmentIoentity">
+        SELECT
+        <include refid="baseColumns"/>
+        FROM sys_department  WHERE department_id = #{departmentId}
+    </select>
+
+    <select id="list" parameterType="com.shyfay.admin.web.input.DepartmentCondition"
+            resultType="com.shyfay.admin.web.iobean.DepartmentIoentity" >
+        SELECT
+        <include refid="baseColumns" />
+        FROM sys_department
+        <where>
+            delete_status = 0
+            <if test="departmentName!=null and departmentName != ''">
+                AND department_name LIKE CONCAT('%', #{departmentName}, '%')
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="listOption" resultType="com.shyfay.admin.web.output.SelectOption">
+        SELECT
+        <include refid="optionColumn"/>
+        FROM sys_department WHERE delete_status = 0;
+    </select>
+</mapper>

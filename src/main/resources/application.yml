@@ -1,0 +1,33 @@
+server:
+  port: 8081
+druid:
+    driverClass: com.mysql.jdbc.Driver
+    url: jdbc:mysql://132.232.48.14:3306/shyfay-admin?characterEncoding=UTF-8@&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: mys160712
+    initial-size: 5
+    min-idle: 1
+    max-active: 100
+    test-on-borrow: true
+
+mybatis:
+  type-aliases-package: com.shyfay.admin.bean;
+  mapper-locations: classpath:mybatis/mapper/*Mapper.xml
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+
+redis:
+  database: 0
+  hostName: 132.232.48.14
+  port: 6379
+  password: redispassword!@#
+  pool.max-active: 8
+  pool.max-wait: -1
+  pool.max-idle: 8
+  pool.min-idle: 0
+  timeout: 0

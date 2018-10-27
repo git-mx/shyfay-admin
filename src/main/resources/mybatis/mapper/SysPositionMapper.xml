@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyfay.admin.dao.SysPositionMapper">
+    <sql id="baseColumns">
+        position_id AS "positionId",
+        position_name AS "positionName",
+        position_level AS "positionLevel",
+        position_remark AS "positionRemark"
+    </sql>
+
+    <sql id="optionColumn">
+        position_id AS "id",
+        position_name AS "name"
+    </sql>
+    <insert id="insert" parameterType="com.shyfay.admin.bean.SysPosition" >
+        INSERT INTO sys_position
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="positionId!=null">
+                position_id,
+            </if>
+            <if test="positionName!=null">
+                position_name,
+            </if>
+            <if test="positionLevel!=null">
+                position_level,
+            </if>
+            <if test="positionRemark!=null">
+                position_remark,
+            </if>
+            <if test="createTime!=null">
+                create_time,
+            </if>
+            <if test="updateTime!=null">
+                update_time,
+            </if>
+            <if test="deleteStatus!=null">
+                delete_status,
+            </if>
+            <if test="createId!=null">
+                create_id,
+            </if>
+            <if test="upadteId!=null">
+                upadte_id
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="positionId!=null">
+                #{positionId},
+            </if>
+            <if test="positionName!=null">
+                #{positionName},
+            </if>
+            <if test="positionLevel!=null">
+                #{positionLevel},
+            </if>
+            <if test="positionRemark!=null">
+                #{positionRemark},
+            </if>
+            <if test="createTime!=null">
+                #{createTime},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime},
+            </if>
+            <if test="deleteStatus!=null">
+                #{deleteStatus},
+            </if>
+            <if test="createId!=null">
+                #{createId},
+            </if>
+            <if test="upadteId!=null">
+                #{upadteId}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.shyfay.admin.bean.SysPosition" >
+        UPDATE sys_position
+        <set>
+            <if test="positionId!=null">
+                position_id=#{positionId},
+            </if>
+            <if test="positionName!=null">
+                position_name=#{positionName},
+            </if>
+            <if test="positionLevel!=null">
+                position_level=#{positionLevel},
+            </if>
+            <if test="positionRemark!=null">
+                position_remark=#{positionRemark},
+            </if>
+            <if test="createTime!=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+            <if test="deleteStatus!=null">
+                delete_status=#{deleteStatus},
+            </if>
+            <if test="createId!=null">
+                create_id=#{createId},
+            </if>
+            <if test="upadteId!=null">
+                upadte_id=#{upadteId}
+            </if>
+        </set>
+        <where>
+            position_id = #{positionId}
+        </where>
+    </update>
+
+
+
+    <update id="updateDeleteStatus">
+        UPDATE sys_position SET delete_status  = 1 WHERE position_id = #{positionId}
+    </update>
+
+    <select id="get" resultType="com.shyfay.admin.web.iobean.PositionIoentity">
+        SELECT
+        <include refid="baseColumns"/>
+        FROM sys_position  WHERE position_id = #{positionId}
+    </select>
+
+    <select id="list" parameterType="com.shyfay.admin.web.input.PositionCondition"
+            resultType="com.shyfay.admin.web.iobean.PositionIoentity" >
+        SELECT
+        <include refid="baseColumns" />
+        FROM sys_position
+        <where>
+            delete_status = 0
+            <if test="positionName!=null and positionName != ''">
+                AND position_name LIKE CONCAT('%', #{positionName}, '%')
+            </if>
+            <if test="positionLevel!=null and positionLevel != ''">
+                AND position_level = #{positionLevel}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    <select id="listOption" resultType="com.shyfay.admin.web.output.SelectOption">
+        SELECT
+        <include refid="optionColumn"/>
+        FROM sys_position WHERE delete_status = 0;
+    </select>
+</mapper>
