@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
     <name>shyfay-admin</name>
-    <description>personal wabsite admin-project</description>
+    <description>personal wabsite springboot-java</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
