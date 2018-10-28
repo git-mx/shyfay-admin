@@ -1,6 +1,7 @@
 ﻿#Maven Project File
 target/
 bin/
+USERRESOURCES/
 .mvn/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -9,6 +10,7 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+
 
 
 # Eclipse Project file

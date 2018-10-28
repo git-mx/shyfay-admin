@@ -36,7 +36,7 @@ public class SwaggerConfig {
     private final static String AUTHOR_EMAIL = "muxue@syswin.com";
 
     private final static String OPEN_API_PATH = "(/domain/.*)|(/login/getCode.*)|(/login/userLogin.*)";
-    private final static String INNER_API_PATH = "(/student/.*)|(/department/.*)|(/position/.*)|(/user/.*)|(/login/userExit)|(/login/modifyPassword)";
+    private final static String INNER_API_PATH = "(/student/.*)|(/department/.*)|(/position/.*)|(/user/.*)|(/login/userExit)|(/login/modifyPassword)|(/upload/.*)";
 
     @Bean
     public Docket innerApi(){
