@@ -1,6 +1,7 @@
 package com.shyfay.admin.dao;
 
 import com.shyfay.admin.bean.Student;
+import com.shyfay.admin.web.input.StudentCondition;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,11 +11,12 @@ import java.util.List;
  */
 public interface StudentMapper {
     int add(Student student);
-    int delete(Integer studentId);
-    Student get(Integer studentId);
+    int delete(@Param("studentId")Long studentId);
+    Student get(@Param("studentId")Long studentId);
     List<Student> getRand();
     int update(Student student);
     List<Student> list();
     List<Student> listTwins(@Param("nameOne") String nameOne, @Param("nameTwo") String nameTwo);
-    Student getExchange(@Param("groupNo") int groupNo, @Param("studentId") int studentId);
+    List<Student> listByCondition(StudentCondition condition);
+    Student getExchange(@Param("groupNo")Long groupNo, @Param("studentId")Long studentId);
 }

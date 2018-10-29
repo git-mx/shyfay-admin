@@ -1,6 +1,12 @@
 package com.shyfay.admin.web.controller;
 
+import com.shyfay.admin.common.base.ExceptionCode;
+import com.shyfay.admin.common.base.ResponseResult;
+import com.shyfay.admin.common.util.OrderNumberUtil;
 import com.shyfay.admin.service.StudentService;
+import com.shyfay.admin.web.input.StudentAdd;
+import com.shyfay.admin.web.input.StudentCondition;
+import com.shyfay.admin.web.input.StudentUpdate;
 import lombok.extern.slf4j.Slf4j;
 import com.shyfay.admin.bean.Student;
 import io.swagger.annotations.Api;
@@ -10,14 +16,15 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,18 +33,96 @@ import java.util.List;
 /**
  * Created by mx on 2018/8/18 0018.
  */
-@Controller
+@RestController
 @RequestMapping("/student")
-@Api(value = "随机排序服务", description = "随机排序服务")
+@Api(value = "学生信息服务", description = "学生信息服务")
 @Slf4j
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private OrderNumberUtil orderNumberUtil;
+
+    @ApiOperation(value="添加学生信息", httpMethod="POST", notes="添加学生信息")
+    @RequestMapping(value = "/addStudent", method = RequestMethod.POST)
+    public ResponseResult addStudent(
+            @ApiParam(required = true, name = "student", value = "POST实体")@RequestBody @Valid StudentAdd student,
+            Errors errors
+    ){
+        if(errors.hasErrors()){
+            return new ResponseResult(ExceptionCode.PARAM_ILLEGAL);
+        }
+        try{
+            Student add = new Student();
+            BeanUtils.copyProperties(student, add);
+            add.setGroupNo(0L);
+            add.setOrderNumber(orderNumberUtil.getOrderNumber());
+            studentService.add(add);
+            return new ResponseResult(ExceptionCode.SUCCESS);
+        }catch(Exception e){
+            log.error("添加学生信息报错" + e.getMessage());
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
+        }
+    }
+
+
+    @ApiOperation(value="修改学生信息", httpMethod="POST", notes = "修改学生信息")
+    @RequestMapping(value="/modifyStudent", method= RequestMethod.POST)
+    public ResponseResult modifyStudent(
+            @ApiParam(required=true, name="student", value="POST实体") @RequestBody @Valid StudentUpdate student,
+            Errors errors
+    ){
+        if(errors.hasErrors()){
+            return new ResponseResult(ExceptionCode.PARAM_ILLEGAL);
+        }
+        try{
+            Student update = new Student();
+            BeanUtils.copyProperties(student, update);
+            studentService.update(update);
+            return new ResponseResult(ExceptionCode.SUCCESS);
+        }catch(Exception e){
+            log.error("修改学生息报错" + e.getMessage());
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value="获取学生信息详情", httpMethod="GET", notes="获取学生信息详情")
+    @RequestMapping(value="/detailStudent", method= RequestMethod.GET)
+    public ResponseResult detailStudent(
+            @ApiParam(required=true, name="studentId", value="职位ID") @RequestParam Long studentId){
+        if(null == studentId){
+            return new ResponseResult(ExceptionCode.PARAM_ILLEGAL);
+        }
+        try{
+            return ResponseResult.success(studentService.get(studentId));
+        }catch(Exception e){
+            log.error("获取学生信息详情报错" + e.getMessage());
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value="获取学生信息列表", httpMethod="POST", notes="获取学生信息列表")
+    @RequestMapping(value="/listStudent", method= RequestMethod.POST)
+    public ResponseResult listStudent(
+            @ApiParam(required=true, name="condition", value="POST实体") @RequestBody @Valid StudentCondition condition,
+            Errors errors
+    ){
+        if(errors.hasErrors()){
+            return new ResponseResult(ExceptionCode.PARAM_ILLEGAL);
+        }
+        try{
+            return ResponseResult.success(studentService.listByCondition(condition));
+        }catch(Exception e){
+            log.error("获取职位列表报错" + e.getMessage());
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(value="导入学生信息", httpMethod = "POST", notes = "导入学生信息")
     @RequestMapping(value = "/importData", method= RequestMethod.POST)
-    public String importData(@RequestParam("file") MultipartFile file) {
+    public ResponseResult importData(@RequestParam("file") MultipartFile file) {
         try{
             Workbook hssfWorkbook = WorkbookFactory.create(file.getInputStream());
             Sheet tempSheet = hssfWorkbook.getSheetAt(0);
@@ -47,28 +132,31 @@ public class StudentController {
                     continue;
                 }
                 Student student = new Student();
-                student.setGroupNo(0);
+                student.setGroupNo(0L);
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
                 row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
                 row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
+                student.setGroupNo(0L);
                 student.setStudentName(row.getCell(0).getStringCellValue());
                 student.setParentName(row.getCell(1).getStringCellValue());
                 student.setContactPhone(row.getCell(2).getStringCellValue());
+                student.setContactPhone(row.getCell(3).getStringCellValue());
                 students.add(student);
                 studentService.add(student);
             }
-            return "success";
+            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("导入学生信息报错：" + e.getMessage());
-            return "fail";
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
         }
     }
 
     @ApiOperation(value="随机分组", httpMethod = "GET", notes = "随机分组")
     @RequestMapping(value="/randGroup", method= RequestMethod.GET)
-    public String randGroup(){
+    public ResponseResult randGroup(){
         try{
-            int groupNo = 0;
+            Long groupNo = 0L;
             while(groupNo > -1){
                 groupNo++;
                 List<Student> students = studentService.getRand();
@@ -79,19 +167,19 @@ public class StudentController {
                         studentService.update(student);
                     }
                 }else{
-                    groupNo = -1;
+                    groupNo = -1L;
                 }
             }
-            return "success";
+            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("随机分组报错：" + e.getMessage());
-            return "fail";
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
         }
     }
 
     @ApiOperation(value="处理双胞胎数据", httpMethod = "GET", notes = "处理双胞胎数据")
     @RequestMapping(value="/handleTwinsData", method= RequestMethod.GET)
-    public String handleTwinsData(
+    public ResponseResult handleTwinsData(
             @ApiParam(required = true, name = "nameOne", value = "双胞胎中第一个小孩姓名") @RequestParam String nameOne,
             @ApiParam(required = true, name = "nameTwo", value = "双胞胎中第二个小孩姓名") @RequestParam String nameTwo
     ){
@@ -104,30 +192,30 @@ public class StudentController {
             two.setGroupNo(one.getGroupNo());
             studentService.update(two);
             studentService.update(exchange);
-            return "success";
+            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("处理双胞胎数据报错：" + e.getMessage());
-            return "fail";
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
         }
     }
 
 
     @ApiOperation(value="下载分好组的数据", httpMethod = "GET", notes = "下载数据")
     @RequestMapping(value="/dwonloadData", method = RequestMethod.GET)
-    public String dwonloadData(HttpServletResponse response){
+    public ResponseResult dwonloadData(HttpServletResponse response){
         try{
             String sheetName = "Sheet1";
-            String titleName = "幼儿园学生分组信息表";
-            String fileName = URLEncoder.encode("幼儿园学生分组信息表.xls");
+            String titleName = "学生分组信息表";
+            String fileName = URLEncoder.encode("学生分组信息表.xls");
             int columnNumber = 4;
             int[] columnWidth = { 20, 20, 20, 50 };
             String[] columnName = {"组号", "学生姓名", "父母姓名", "联系电话"};
             List<Student> currList = studentService.list();
             ExportWithResponse(sheetName, titleName, fileName, columnNumber, columnWidth, columnName, currList, response);
-            return "success";
+            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("下载分好组的数据报错：" + e.getMessage());
-            return "fail";
+            return new ResponseResult(ExceptionCode.SERVER_ERROR);
         }
     }
 

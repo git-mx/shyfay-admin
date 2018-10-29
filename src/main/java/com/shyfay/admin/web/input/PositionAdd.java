@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 @Data
-@ApiModel(value="职位添加实体", description="UserAdd")
+@ApiModel(value="PositionAdd", description="职位添加实体")
 public class PositionAdd implements Serializable {
     private static final long serialVersionUID = 1L;
 

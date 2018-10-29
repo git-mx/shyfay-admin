@@ -11,9 +11,10 @@ import java.io.Serializable;
 public class Student  implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer studentId;
-    private Integer groupNo;
+    private Long studentId;
+    private Long groupNo;
     private String studentName;
     private String parentName;
     private String contactPhone;
+    private String orderNumber;
 }

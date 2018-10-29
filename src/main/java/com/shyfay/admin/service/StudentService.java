@@ -1,6 +1,9 @@
 package com.shyfay.admin.service;
 
+import com.github.pagehelper.PageInfo;
 import com.shyfay.admin.bean.Student;
+import com.shyfay.admin.web.input.StudentAdd;
+import com.shyfay.admin.web.input.StudentCondition;
 
 import java.util.List;
 
@@ -9,11 +12,12 @@ import java.util.List;
  */
 public interface StudentService {
     int add(Student student);
-    int delete(Integer studentId);
-    Student get(Integer studentId);
+    int delete(Long studentId);
+    Student get(Long studentId);
     List<Student> getRand();
     int update(Student student);
     List<Student> list();
+    PageInfo<Student> listByCondition(StudentCondition condition);
     List<Student> listTwins(String nameOne, String nameTwo);
-    Student getExchange(int groupNo, int studentId);
+    Student getExchange(Long groupNo, Long studentId);
 }

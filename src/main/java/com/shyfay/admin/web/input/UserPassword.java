@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value="用户登录实体", description = "用户登录实体")
+@ApiModel(value="UserPassword", description = "用户登录实体")
 public class UserPassword implements Serializable {
     private static final Long serialVersionUID = 1L;
 

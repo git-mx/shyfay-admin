@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 @Data
-@ApiModel(value="用户列表查询实体", description = "UserCondition")
+@ApiModel(value="UserCondition", description = "用户列表查询实体")
 public class UserCondition  extends BaseCondition implements Serializable {
     private static final long serialVersionUID = 1L;
 

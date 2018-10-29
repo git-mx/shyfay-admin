@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value="职位修改/列表/详情实体", description="PositionIoentity")
+@ApiModel(value="PositionIoentity", description="职位修改/列表/详情实体")
 public class PositionIoentity implements Serializable {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "职位ID", name = "positionId")

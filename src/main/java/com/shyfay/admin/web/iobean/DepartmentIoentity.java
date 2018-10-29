@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 
 @Data
-@ApiModel(value="部门修改/列表/详情实体", description="DepartmentIoentity")
+@ApiModel(value="DepartmentIoentity", description="部门修改/列表/详情实体")
 public class DepartmentIoentity implements Serializable {
     private static final long serialVersionUID = 1L;
 

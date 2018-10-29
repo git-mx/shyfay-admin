@@ -1,9 +1,17 @@
 package com.shyfay.admin.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.shyfay.admin.bean.Student;
+import com.shyfay.admin.common.util.OrderNumberUtil;
 import com.shyfay.admin.dao.StudentMapper;
+import com.shyfay.admin.web.input.StudentAdd;
+import com.shyfay.admin.web.input.StudentCondition;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -17,15 +25,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public int add(Student student){
-        student.setGroupNo(0);
         return studentMapper.add(student);
     }
     @Override
-    public int delete(Integer studentId){
+    public int delete(Long studentId){
         return studentMapper.delete(studentId);
     }
     @Override
-    public Student get(Integer studentId){
+    public Student get(Long studentId){
         return studentMapper.get(studentId);
     }
     @Override
@@ -45,7 +52,16 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.listTwins(nameOne, nameTwo);
     }
     @Override
-    public Student getExchange(int groupNo, int studentId){
+    public PageInfo<Student> listByCondition(StudentCondition condition){
+        PageHelper.startPage(condition.getPageIndex(), condition.getPageSize());
+        List<Student> students = studentMapper.listByCondition(condition);
+        if(CollectionUtils.isEmpty(students)){
+            return new PageInfo(Lists.newArrayList());
+        }
+        return new PageInfo(students);
+    }
+    @Override
+    public Student getExchange(Long groupNo, Long studentId){
         return studentMapper.getExchange(groupNo, studentId);
     }
 }

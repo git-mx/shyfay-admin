@@ -2,19 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shyfay.admin.dao.StudentMapper">
 
-    <resultMap id="BaseResultMap" type="com.shyfay.admin.bean.Student" >
-        <result column="studentId" property="studentId" />
-        <result column="groupNo" property="groupNo" />
-        <result column="studentName" property="studentName" />
-        <result column="parentName" property="parentName" />
-        <result column="contactPhone" property="contactPhone" />
-    </resultMap>
+    <!--<resultMap id="BaseResultMap" type="com.shyfay.admin.bean.Student" >-->
+        <!--<result column="studentId" property="studentId" />-->
+        <!--<result column="groupNo" property="groupNo" />-->
+        <!--<result column="studentName" property="studentName" />-->
+        <!--<result column="parentName" property="parentName" />-->
+        <!--<result column="contactPhone" property="contactPhone" />-->
+    <!--</resultMap>-->
     <sql id="studentColumns">
         student_id AS "studentId",
         group_no AS "groupNo",
         student_name AS "studentName",
         parent_name AS "parentName",
-        contact_phone AS "contactPhone"
+        contact_phone AS "contactPhone",
+        order_number AS "orderNumber"
     </sql>
 
     <insert id="add" parameterType="com.shyfay.admin.bean.Student" >
@@ -33,7 +34,10 @@
                 parent_name,
             </if>
             <if test="contactPhone!=null">
-                contact_phone
+                contact_phone,
+            </if>
+            <if test="orderNumber!=null">
+                order_number
             </if>
         </trim>
         <trim prefix="values(" suffix=")" suffixOverrides=",">
@@ -50,7 +54,10 @@
                 #{parentName},
             </if>
             <if test="contactPhone!=null">
-                #{contactPhone}
+                #{contactPhone},
+            </if>
+            <if test="orderNumber!=null">
+                #{orderNumber}
             </if>
         </trim>
     </insert>
@@ -61,7 +68,7 @@
     </delete>
 
     <!--查询单个对象-->
-    <select id="get" parameterType="java.lang.Integer" resultType="com.shyfay.admin.bean.Student">
+    <select id="get" resultType="com.shyfay.admin.bean.Student">
         SELECT
         <include refid="studentColumns"/>
         FROM student  WHERE student_id = #{studentId}
@@ -91,9 +98,11 @@
                 parent_name = #{parentName},
             </if>
             <if test="contactPhone!=null">
-                contact_phone = #{contactPhone}
+                contact_phone = #{contactPhone},
             </if>
-
+            <if test="orderNumber!=null">
+                order_number=#{orderNumber}
+            </if>
         </set>
         <where>
             student_id = #{studentId}
@@ -106,6 +115,21 @@
         SELECT
         <include refid="studentColumns" />
        FROM student ORDER BY group_no
+    </select>
+
+    <select id="listByCondition" parameterType="com.shyfay.admin.web.input.StudentCondition"
+            resultType="com.shyfay.admin.bean.Student" >
+        SELECT
+        <include refid="studentColumns" />
+        FROM student
+        <where>
+            <if test="studentName!=null and studentName != ''">
+                AND student_name LIKE CONCAT('%', #{studentName}, '%')
+            </if>
+            <if test="orderNumber!=null and orderNumber != ''">
+                AND order_number = #{orderNumber}
+            </if>
+        </where>
     </select>
 
     <select id="listTwins" resultType="com.shyfay.admin.bean.Student">

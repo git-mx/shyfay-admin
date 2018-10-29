@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value="列表查询实体", description = "BaseCondition")
+@ApiModel(value="BaseCondition", description = "列表查询实体")
 public class BaseCondition implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -8,7 +8,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value="职位查询实体", description = "DepartmentCondition")
+@ApiModel(value="DepartmentCondition", description = "职位查询实体")
 public class PositionCondition extends BaseCondition implements Serializable {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "职位名称", notes = "职位名称")
