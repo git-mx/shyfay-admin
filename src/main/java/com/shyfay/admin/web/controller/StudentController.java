@@ -141,7 +141,7 @@ public class StudentController {
                 student.setStudentName(row.getCell(0).getStringCellValue());
                 student.setParentName(row.getCell(1).getStringCellValue());
                 student.setContactPhone(row.getCell(2).getStringCellValue());
-                student.setContactPhone(row.getCell(3).getStringCellValue());
+                student.setOrderNumber(row.getCell(3).getStringCellValue());
                 students.add(student);
                 studentService.add(student);
             }

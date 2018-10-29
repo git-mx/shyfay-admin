@@ -77,7 +77,7 @@
     <select id="getRand" resultType="com.shyfay.admin.bean.Student">
         SELECT
         <include refid="studentColumns"/>
-        FROM student  WHERE group_no = 0 ORDER BY RAND() limit 2;
+        FROM student ORDER BY RAND() limit 2;
     </select>
 
 
