@@ -28,6 +28,10 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.add(student);
     }
     @Override
+    public void addBatch(List<Student> students){
+        studentMapper.insertBatch(students);
+    }
+    @Override
     public int delete(Long studentId){
         return studentMapper.delete(studentId);
     }

@@ -18,5 +18,6 @@ public class ExceptionCode {
     public static final CodeMessage OLD_PASSWORD_ERROE = new CodeMessage(7, "旧密码错误");
     public static final CodeMessage SESSION_EXPIRE = new CodeMessage(8, "用户登录已过期，请从新登录");
     public static final CodeMessage LOGIN_NAME_EXISTS = new CodeMessage(9, "用户名已存在，请重新输入");
+    public static final CodeMessage LAST_RAND_GROUP = new CodeMessage(10, "上一次随机分组操作还未结束，请稍后再试");
 
 }

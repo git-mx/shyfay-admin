@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface StudentService {
     int add(Student student);
+    void addBatch(List<Student> students);
     int delete(Long studentId);
     Student get(Long studentId);
     List<Student> getRand();

@@ -24,7 +24,7 @@ public class OrderNumberUtil {
         LocalDateTime emYearMonthTemp = LocalDateTime.ofEpochSecond(System.currentTimeMillis()/1000,0, ZoneOffset.of("+8"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String nowStr = emYearMonthTemp.format(formatter);
-        String reidsKeyPrefix = Constant.SESSION_KEY_PREFIX + nowStr;
+        String reidsKeyPrefix = Constant.ORDER_NUMBER_REDIS_KEY + nowStr;
         Long keyvalue;
         keyvalue=  redisTemplate.opsForValue().increment(reidsKeyPrefix, 1L);
         if(1==keyvalue){

@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface StudentMapper {
     int add(Student student);
+    void insertBatch(@Param("students")List<Student> students);
     int delete(@Param("studentId")Long studentId);
     Student get(@Param("studentId")Long studentId);
     List<Student> getRand();

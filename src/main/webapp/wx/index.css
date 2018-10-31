@@ -1,0 +1,53 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,button,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time,textarea, mark, audio, video{margin: 0;padding: 0;color: #333;border: 0;vertical-align: baseline;background: transparent;list-style: none;font-weight: normal;font-style: normal;border-collapse: collapse;border-spacing: 0;font-family:"Microsoft Yahei", Arial, Helvetica, sans-serif;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-tap-highlight-color: transparent;}
+.claimer-page{
+    text-align: center;
+    padding: 0 0.48rem;
+    background: #fff!important;
+}
+.claimer-page h1{
+    margin-top: 2.2rem;
+    margin-bottom: 1.6rem;
+    font-family: PingFangSC-Medium;
+    font-size: 0.48rem;
+    color: #4A4A4A;
+    text-align: center;
+    line-height:0.38rem;
+}
+.claimer-page .news {
+    margin-bottom: 2rem;
+}
+.claimer-page p{
+    font-size: 0.34rem;
+    color: #383838;
+    text-align: center;
+    line-height: 0.6rem;
+}
+.claimer-page .phone{
+    font-size: 0.32rem;
+    color: #8E8E93;
+    text-align: center;
+    margin-bottom: 0.44rem;
+}
+.bnt-know {
+    background: #DF3031;
+}
+.bnt-know button{
+    display: inline-block;
+    height: 1rem;
+    width: 100%;
+    line-height: 1rem;
+    font-size: 0.36rem;
+    color: #FFFFFF;
+    background: #DF3031;
+}

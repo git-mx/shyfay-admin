@@ -2,6 +2,7 @@ package com.shyfay.admin.web.controller;
 
 import com.shyfay.admin.common.base.ExceptionCode;
 import com.shyfay.admin.common.base.ResponseResult;
+import com.shyfay.admin.common.constant.Constant;
 import com.shyfay.admin.common.util.OrderNumberUtil;
 import com.shyfay.admin.service.StudentService;
 import com.shyfay.admin.web.input.StudentAdd;
@@ -12,13 +13,14 @@ import com.shyfay.admin.bean.Student;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mx on 2018/8/18 0018.
@@ -44,6 +47,9 @@ public class StudentController {
 
     @Autowired
     private OrderNumberUtil orderNumberUtil;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @ApiOperation(value="添加学生信息", httpMethod="POST", notes="添加学生信息")
     @RequestMapping(value = "/addStudent", method = RequestMethod.POST)
@@ -143,8 +149,8 @@ public class StudentController {
                 student.setContactPhone(row.getCell(2).getStringCellValue());
                 student.setOrderNumber(row.getCell(3).getStringCellValue());
                 students.add(student);
-                studentService.add(student);
             }
+            studentService.addBatch(students);
             return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("导入学生信息报错：" + e.getMessage());
@@ -152,25 +158,38 @@ public class StudentController {
         }
     }
 
+
+    //耗时操作设置锁机制
     @ApiOperation(value="随机分组", httpMethod = "GET", notes = "随机分组")
     @RequestMapping(value="/randGroup", method= RequestMethod.GET)
     public ResponseResult randGroup(){
         try{
-            Long groupNo = 0L;
-            while(groupNo > -1){
-                groupNo++;
-                List<Student> students = studentService.getRand();
-                if(students.size() > 0){
-                    for(int i=0; i<students.size(); i++){
-                        Student student = students.get(i);
-                        student.setGroupNo(groupNo);
-                        studentService.update(student);
+            String lock = redisTemplate.opsForValue().get(Constant.REDIS_LOCK_RAND_GROUP);
+            if(StringUtils.isBlank(lock)){
+                //加锁
+                redisTemplate.opsForValue().set(Constant.REDIS_LOCK_RAND_GROUP, "something");
+                //让锁十分钟后自动过期
+                redisTemplate.expire(Constant.REDIS_LOCK_RAND_GROUP, 10L, TimeUnit.MINUTES);
+                Long groupNo = 0L;
+                while(groupNo > -1){
+                    groupNo++;
+                    List<Student> students = studentService.getRand();
+                    if(students.size() > 0){
+                        for(int i=0; i<students.size(); i++){
+                            Student student = students.get(i);
+                            student.setGroupNo(groupNo);
+                            studentService.update(student);
+                        }
+                    }else{
+                        groupNo = -1L;
                     }
-                }else{
-                    groupNo = -1L;
                 }
+                //释放锁
+                redisTemplate.delete(Constant.REDIS_LOCK_RAND_GROUP);
+                return new ResponseResult(ExceptionCode.SUCCESS);
+            }else{
+                return new ResponseResult(ExceptionCode.LAST_RAND_GROUP);
             }
-            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("随机分组报错：" + e.getMessage());
             return new ResponseResult(ExceptionCode.SERVER_ERROR);
@@ -200,9 +219,12 @@ public class StudentController {
     }
 
 
+    //这里由于手动设置了输出流（在ExportWithResponse里面OutputStream里面输出了）
+    //所以这里不能再返回ResponseResult,如果使用ResponseResult返回了，前端也能收到文件，
+    //但是在JAVA后台会抛出 Could not find acceptable representation异常
     @ApiOperation(value="下载分好组的数据", httpMethod = "GET", notes = "下载数据")
     @RequestMapping(value="/dwonloadData", method = RequestMethod.GET)
-    public ResponseResult dwonloadData(HttpServletResponse response){
+    public void dwonloadData(HttpServletResponse response){
         try{
             String sheetName = "Sheet1";
             String titleName = "学生分组信息表";
@@ -212,10 +234,8 @@ public class StudentController {
             String[] columnName = {"组号", "学生姓名", "父母姓名", "联系电话"};
             List<Student> currList = studentService.list();
             ExportWithResponse(sheetName, titleName, fileName, columnNumber, columnWidth, columnName, currList, response);
-            return new ResponseResult(ExceptionCode.SUCCESS);
         }catch (Exception e){
             log.error("下载分好组的数据报错：" + e.getMessage());
-            return new ResponseResult(ExceptionCode.SERVER_ERROR);
         }
     }
 
