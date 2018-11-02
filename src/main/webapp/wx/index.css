@@ -51,3 +51,18 @@ time,textarea, mark, audio, video{margin: 0;padding: 0;color: #333;border: 0;ver
     color: #FFFFFF;
     background: #DF3031;
 }
+.txt-money {
+    text-align: center;
+    height: 70px;
+    width: 85%;
+    border-radius: 4px;
+    font-size:40px;
+}
+.h1-warning {
+    color: red;
+    display: none;
+}
+.loading
+{
+    margin: 0;
+}

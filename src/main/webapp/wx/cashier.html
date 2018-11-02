@@ -8,20 +8,18 @@
     <script src="index.js"></script>
     <script type="text/javascript">
         function wxpay(){
-            //alert('AAAAAAAAAAAAAA');
             window.location.href = "http://lzwx.mrwu.xin/shyfay-admin/wx/pay";
-            //window.location.href = "http://localhost:8081/wx/pay";
         }
     </script>
 </head>
 <body>
     <div class="page claimer-page">
-        <h1>免责声明</h1>
+        <h1>确认支付</h1>
         <div class="news">
-            <p>本服务由同程旅游提供</p>
-            <p>相关服务和责任由第三方承担</p>
+            <p>本服务是个人网站</p>
+            <p>请勿将本网站用于其他商业用途</p>
         </div>
-        <p class="phone">如有问题请咨询该公司客服4007-777-777</p>
+        <p class="phone" id="payResult"></p>
         <div class="bnt-know">
             <!--<button onClick="window.location.href = 'https://m.ly.com/flightnew/?refid=234264612'">我知道了</button>-->
             <button onClick="wxpay()">确认支付</button>

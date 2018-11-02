@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>免责声明</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no">
+    <link href="index.css" rel="stylesheet" type="text/css">
+    <script src="index.js"></script>
+    <script type="text/javascript">
+        var int;
+        window.onload = function(){
+            int = self.setInterval(function(){
+                postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/getResult')
+            }, 2000);
+        };
+        function repay(){
+            window.location.href = "http://lzwx.mrwu.xin/shyfay-admin/wx/order.html";
+            //postJsonData("http://lzwx.mrwu.xin/shyfay-admin/wx/pay");
+            //异步调用下单接口
+
+        }
+        function postJsonData(url){
+            var ajax = createAjax();
+            ajax.open('GET', url, true);
+            ajax.send();
+            //ajax.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4) {
+                    if (ajax.status === 200) {
+                        var data = JSON.parse(ajax.responseText);
+                        self.clearInterval(int);
+                        if(data.meta.code === 0){
+                            self.clearInterval(int);
+                            window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/success.html';
+                        }else if(data.meta.code === 1){
+                            self.clearInterval(int);
+                            window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/fail.html';
+                        }
+                    }
+                }
+            };
+        }
+        function createAjax() {
+            var xmlhttp = {};
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return xmlhttp;
+        }
+    </script>
+</head>
+<body>
+    <div class="page claimer-page"  style="margin-top: 35%">
+        <div class="loading" id="loading">
+            <img src="loading.gif" />
+            <p class="phone">正在处理支付结果...</p>
+        </div>
+    </div>
+</body>
+</html>
+

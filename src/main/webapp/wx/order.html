@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>免责声明</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no">
+    <link href="index.css" rel="stylesheet" type="text/css">
+    <script src="index.js"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            window.document.getElementById('pTitle').innerText = '支付金额（单位：分）';
+            var expire = getUrlParam("expire");
+            if(expire === 1){
+                document.getElementsByClassName("h1-warning").style.display = "block";
+            }
+        };
+        function getUrlParam(paramName) {
+            var reg = new RegExp("(^|&)" + paramName + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+        function submit(){
+            var obj = {
+                outTradeNo: 'rfsew5345dfgrgdfgdfgdfgdfggf435',
+                subject: '微信H5支付',
+                totalAmount: window.document.getElementById('txtMoney').value
+            };
+            postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/preOrder', obj);
+
+        }
+        //异步调用下单接口
+        function postJsonData(url,data){
+            var ajax = createAjax();
+            ajax.open('POST', url, true);
+            ajax.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4) {
+                    if (ajax.status === 200) {
+                        console.info("[STATISTICS] successfully report log to server");
+                        console.info("success: ",ajax.responseText);
+                        window.location.href='http://lzwx.mrwu.xin/shyfay-admin/wx/cashier.html';
+                    } else {
+                        console.info("[STATISTICS] report log to server failed");
+                    }
+                }
+            };
+            console.info(JSON.stringify(data));
+            ajax.send(JSON.stringify(data));
+        }
+        function createAjax() {
+            var xmlhttp = {};
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return xmlhttp;
+        }
+    </script>
+</head>
+<body>
+    <div class="page claimer-page">
+        <h1 class="h1-warning">您的订单已失效，请重新下单</h1>
+        <h1>确认下单</h1>
+        <div class="news">
+            <p id="pTitle"></p>
+            <input type="text" class="txt-money" id="txtMoney" />
+        </div>
+        <div class="bnt-know">
+            <!--<button onClick="window.location.href = 'https://m.ly.com/flightnew/?refid=234264612'">我知道了</button>-->
+            <button onClick="submit()">确认下单</button>
+        </div>
+    </div>
+</body>
+</html>
+

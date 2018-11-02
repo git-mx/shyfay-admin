@@ -5,12 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -22,6 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.shyfay.admin.common.constant.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -221,7 +217,7 @@ public class WXPayUtil {
             return respData;
         }
         else if (return_code.equals("SUCCESS")) {
-            if (isSignatureValid(respData, "a1f3c33c33bb49c7d9e4a8de1af85c6a")) {
+            if (isSignatureValid(respData, Constant.WX_PAY_SING_KEY)) {
                 return respData;
             }
             else {
@@ -248,4 +244,38 @@ public class WXPayUtil {
         String sign = data.get("sign");
         return generateSignature(data, key).equals(sign);
     }
+
+    public static Map<String, String> paraFilter(Map<String, String> sArray) {
+        Map<String, String> result = new HashMap<String, String>();
+        if (sArray == null || sArray.size() <= 0) {
+            return result;
+        }
+        for (String key : sArray.keySet()) {
+            String value = sArray.get(key);
+            if (value == null || value.equals("") || key.equalsIgnoreCase("sign")
+                    || key.equalsIgnoreCase("sign_type")) {
+                continue;
+            }
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static String createLinkString(Map<String, String> params) {
+        List<String> keys = new ArrayList<String>(params.keySet());
+        Collections.sort(keys);
+        String prestr = "";
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            String value = params.get(key);
+            if (i == keys.size() - 1) {// 拼接时，不包括最后一个&字符
+                prestr = prestr + key + "=" + value;
+            } else {
+                prestr = prestr + key + "=" + value + "&";
+            }
+        }
+        return prestr;
+    }
+
+
 }

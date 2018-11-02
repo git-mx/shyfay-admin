@@ -5,6 +5,7 @@ druid:
     url: jdbc:mysql://localhost:3306/shyfay-admin?characterEncoding=UTF-8@&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
     username: root
     password: mys160712
+    #password: root
     initial-size: 5
     min-idle: 1
     max-active: 100
@@ -31,5 +32,14 @@ redis:
   pool.max-idle: 8
   pool.min-idle: 0
   timeout: 0
+
 logging:
   file: /home/logs/shyfay-admin.log
+  pattern:
+    level: info
+    file: "[shyfay-admin] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level = > %msg%n"
+  level:
+    com:
+      shyfay:
+        admin:
+          dao: debug
