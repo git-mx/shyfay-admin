@@ -26,7 +26,8 @@
                 subject: '微信H5支付',
                 totalAmount: window.document.getElementById('txtMoney').value
             };
-            postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/preOrder', obj);
+            //postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/preOrder', obj);
+			postJsonData('http://www.shyfay.com/wx/preOrder', obj);
 
         }
         //异步调用下单接口
@@ -39,7 +40,8 @@
                     if (ajax.status === 200) {
                         console.info("[STATISTICS] successfully report log to server");
                         console.info("success: ",ajax.responseText);
-                        window.location.href='http://lzwx.mrwu.xin/shyfay-admin/wx/cashier.html';
+                        //window.location.href='http://lzwx.mrwu.xin/shyfay-admin/wx/cashier.html';
+						window.location.href='http://www.shyfay.com/wx/cashier.html';
                     } else {
                         console.info("[STATISTICS] report log to server failed");
                     }
@@ -68,7 +70,6 @@
             <input type="text" class="txt-money" id="txtMoney" />
         </div>
         <div class="bnt-know">
-            <!--<button onClick="window.location.href = 'https://m.ly.com/flightnew/?refid=234264612'">我知道了</button>-->
             <button onClick="submit()">确认下单</button>
         </div>
     </div>

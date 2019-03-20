@@ -10,11 +10,13 @@
         var int;
         window.onload = function(){
             int = self.setInterval(function(){
-                postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/getResult')
+                //postJsonData('http://lzwx.mrwu.xin/shyfay-admin/wx/getResult')
+				postJsonData('http://www.shyfay.com/wx/getResult')
             }, 2000);
         };
         function repay(){
-            window.location.href = "http://lzwx.mrwu.xin/shyfay-admin/wx/order.html";
+            //window.location.href = "http://lzwx.mrwu.xin/shyfay-admin/wx/order.html";
+			window.location.href = "http://www.shyfay.com/wx/order.html";
             //postJsonData("http://lzwx.mrwu.xin/shyfay-admin/wx/pay");
             //异步调用下单接口
 
@@ -31,10 +33,12 @@
                         self.clearInterval(int);
                         if(data.meta.code === 0){
                             self.clearInterval(int);
-                            window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/success.html';
+                            //window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/success.html';
+							window.location.href = 'http://www.shyfay.com/wx/success.html';
                         }else if(data.meta.code === 1){
                             self.clearInterval(int);
-                            window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/fail.html';
+                            //window.location.href = 'http://lzwx.mrwu.xin/shyfay-admin/wx/fail.html';
+							window.location.href = 'http://www.shyfay.com/wx/fail.html';
                         }
                     }
                 }

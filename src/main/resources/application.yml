@@ -1,15 +1,15 @@
 server:
   port: 8081
 druid:
-    driverClass: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/shyfay-admin?characterEncoding=UTF-8@&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: mys160712
-    #password: root
-    initial-size: 5
-    min-idle: 1
-    max-active: 100
-    test-on-borrow: true
+  driverClass: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/shyfay-admin?characterEncoding=UTF-8@&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+  username: root
+  password: mys160712
+  #password: root
+  initial-size: 5
+  min-idle: 1
+  max-active: 100
+  test-on-borrow: true
 
 mybatis:
   type-aliases-package: com.shyfay.admin.bean;

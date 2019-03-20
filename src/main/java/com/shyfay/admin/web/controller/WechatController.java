@@ -42,9 +42,20 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * @author 牟雪
- * @since 2018/10/31
+ *
+ *
+ *@author 牟雪
+ *@since 2018/10/31
  */
+// TODO H5支付会遇到的几种情况：
+// TODO 1.在使用泸州通APP支付的时候调起微信之后还没有支付，就把微信退出了，回到泸州通APP可以正常展示支付失败页面
+// TODO 2.在使用泸州通APP支付的时候调起微信之后一直停留在微信APP上，一直不支付，如果回到使用泸州通APP可以正常展示支付失败页面，
+// TODO   在支付失败页面展示完之后，用户再回到微信进行支付，支付完成之后后台正常处理逻辑，这时候微信会调起手机浏览器
+// TODO   并且定位到获取支付结果页面，再展示支付成功页面，这就会导致展示的不友好性，不过这并不影响业务处理，因为只要支付成功
+// TODO   我们就处理后台逻辑，用户下一次再进入使用泸州通APP查看自己的考试报名信息会发现是已支付状态。
+// TODO 3.在支付的时候调起微信之后一直停留在微信APP上，然后把我们的泸州通关掉，又回到微信进行支付，支付完整之后可以正常处理
+// TODO   逻辑，只是支付完之后微信APP又会调起手机浏览器访问支付结果页面
+// TODO 4.由于微信原因导致的支付失败还没遇到过
 @RestController
 @Api(value="微信H5支付控制器", description = "微信H5支付控制器")
 @RequestMapping("/wx")
@@ -58,6 +69,7 @@ public class WechatController {
     //发起支付所在服务的域名一定要在微信商户系统里设置白名单，一个微信商户最多可以设置5个域名白名单
     //设置的回调接口的域名必须与发起支付所在服务的域名保持一致
     //设置的支付成功后的跳转页面的域名必须与发起支付所在服务的域名保持一致，且必须是发起支付所在服务的页面
+
     @ApiOperation(value="微信H5支付下单接口", httpMethod="GET", notes = "微信H5支付下单接口")
     @RequestMapping(value="/pay", method= RequestMethod.GET)
     public void pay(HttpServletRequest request, HttpServletResponse response){
@@ -117,8 +129,8 @@ public class WechatController {
             httpPost.setConfig(requestConfig);
             StringEntity postEntity = new StringEntity(reqBody, "UTF-8");
             httpPost.addHeader("Content-Type", "text/xml");
-            httpPost.addHeader("User-Agent", "wxpay sdk java v1.0 " + data.get("mch_id"));
             //TODO: 很重要，用来检测 sdk 的使用情况，要不要加上商户信息？
+            httpPost.addHeader("User-Agent", "wxpay sdk java v1.0 " + data.get("mch_id"));
             httpPost.setEntity(postEntity);
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
@@ -173,10 +185,10 @@ public class WechatController {
 
                 //根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
                 if(sign.equals(map.get("sign"))){
-
-                    /**此处添加自己的业务逻辑代码start**/
-                    // bla bla bla....
-                    /**此处添加自己的业务逻辑代码end**/
+                    //在此处处理自己的业务逻辑，例如标记数据库的支付结果字段，微信订单号字段等等。
+                    //处理业务逻辑的时候，系统使用out_trade_no来判断当前回调的是哪一个支付信息
+                    //即在统一下单的时候传送给微信一个out_trade_no，在微信回调的时候会把out_trade_no这个参数返回回来，
+                    //我们就可以通过out_trade_no把统一下单和回调一一对应起来了
                     //通知微信服务器已经支付成功
                     resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                             + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
